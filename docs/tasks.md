@@ -74,11 +74,11 @@ Tasks are ordered to honour state-machine and architectural dependencies. Indepe
   Description: Implement `application/EnterGiveaway.kt`. Flip TDD-20 to green.
   Evidence: `src/main/kotlin/net/badgersmc/giveaway/application/EnterGiveaway.kt; src/main/kotlin/net/badgersmc/giveaway/application/EnterResult.kt; src/main/kotlin/net/badgersmc/giveaway/domain/Entry.kt; src/main/kotlin/net/badgersmc/giveaway/domain/ports/Clock.kt; src/main/kotlin/net/badgersmc/giveaway/domain/ports/GiveawayRepository.kt; src/main/kotlin/net/badgersmc/giveaway/domain/ports/EntryRepository.kt; Konsist LayerRulesTest re-enabled now that application/ has files`
 
-- [ ] **TDD-22** — RED: `DrawWinners` orchestrates draw → command → broadcast
+- [~] **TDD-22** — RED: `DrawWinners` orchestrates draw → command → broadcast
   References: REQ-007, REQ-008, REQ-009, REQ-010, REQ-012
   Tag: TDD
   Description: Write `application/DrawWinnersTest.kt` with mocks for all ports. Assert order: state→DRAWING, RandomDraw called, winners persisted, CommandExecutor called once per winner with expanded placeholders, CelebrationBroadcaster called, state→COMPLETED. Separate test for empty command (REQ-010).
-  Evidence: ` `
+  Evidence: `docs/requirements.md#REQ-007,008,009,010,012; docs/implementation.md#3.1,#3.2,#4.3; src/main/kotlin/net/badgersmc/giveaway/domain/Giveaway.kt; src/main/kotlin/net/badgersmc/giveaway/domain/ports/RandomDraw.kt; io.mockk (build.gradle.kts baseline)`
 
 - [ ] **TDD-23** — GREEN: `DrawWinners` use case
   References: REQ-007, REQ-008, REQ-009, REQ-010, REQ-012
@@ -96,11 +96,11 @@ Tasks are ordered to honour state-machine and architectural dependencies. Indepe
 
 ### DOC tasks
 
-- [ ] **DOC-40** — Pin Starlight Skins API contract snapshot
+- [x] **DOC-40** — Pin Starlight Skins API contract snapshot
   References: REQ-009, tech-stack.md §4
   Tag: DOC
   Description: Create `docs/refs/starlight-skins.md` with the URL pattern, response format (PNG), and known size/face-render parameters. Note the 5s timeout discipline from LumaSG.
-  Evidence: ` `
+  Evidence: `docs/refs/starlight-skins.md; D:/BadgersMC-Dev/LumaSG/src/main/kotlin/net/lumalyte/lumasg/game/Celebration.kt:60-180; config.yml celebration.pixel-art block; docs/tech-stack.md §4`
 
 ---
 
