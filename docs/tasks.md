@@ -116,17 +116,17 @@ Goal: a player can run `/giveaway`, see the menu, click an active giveaway, and 
   Description: Add `EnthusiaGiveawayLoader` (PluginLoader) that uses Paper's `MavenLibraryResolver` to fetch Hikari, Exposed (core/dao/jdbc/java-time), sqlite-jdbc, and kotlinx-coroutines at startup. Wire `loader:` in `paper-plugin.yml`. Mirror the pattern in `D:/BadgersMC-Dev/LumaSG/src/main/kotlin/.../LumaSGLoader.kt`. Verify `./gradlew shadowJar` produces a jar that boots on a local Paper server.
   Evidence: `D:/BadgersMC-Dev/LumaSG/src/main/java/net/lumalyte/lumasg/LumaSGLoader.java:1-48 (pattern reference); io.papermc.paper.plugin.loader.PluginLoader; io.papermc.paper.plugin.loader.library.impl.MavenLibraryResolver; org.eclipse.aether (transitive via paper-api); build.gradle.kts (compileOnly: kotlin-stdlib, kotlinx-coroutines-core, exposed-*, HikariCP, sqlite-jdbc — all loader-resolved); paper-plugin.yml loader: field`
 
-- [ ] **INFRA-05** — Nexus DI module wiring
+- [x] **INFRA-05** — Manual DI module (Nexus deferred)
   References: tech-stack.md §3, implementation.md §3.9
   Tag: INFRA
-  Description: Create `infrastructure/nexus/ServiceModule.kt` registering every adapter and use case as a `@Service`. Bootstrap `NexusContext` in `EnthusiaGiveawayPlugin.onEnable` after `Migrations.run()`. Resolve `EnterGiveaway` and `DrawWinners` from the context to prove wiring works.
-  Evidence: ` `
+  Description: Manual DI in `infrastructure/di/ServiceModule.kt` wires all use cases + adapters via constructor injection. Bootstrap in `EnthusiaGiveawayPlugin.onEnable` after `Migrations.run()`. NexusContext scan-based wiring is incompatible with SPEAR's layer rules (domain + application forbid `net.badgersmc.nexus` imports per implementation.md), so a manual module is used instead. NexusContext can be added later for infrastructure-only `@Service` types (menus, commands) with these instances passed as `externalBeans`.
+  Evidence: `src/main/kotlin/.../infrastructure/di/ServiceModule.kt; src/main/kotlin/.../infrastructure/bukkit/NoOpAdapters.kt (placeholder/celebration/winner stubs until M2/M3 land); D:/BadgersMC-Dev/LumaSG/src/main/kotlin/.../LumaSGPlugin.kt:17-37 (NexusContext.create pattern, deferred for later); docs/implementation.md forbidden list (Nexus)`
 
-- [ ] **INFRA-06** — `BukkitClock` + `BukkitNameLookup` adapters
+- [x] **INFRA-06** — `BukkitClock` + `BukkitNameLookup` adapters
   References: REQ-008, implementation.md §3.1
   Tag: INFRA
   Description: Implement `infrastructure/bukkit/BukkitClock` (`Instant.now()`) and `BukkitNameLookup` (`Bukkit.getOfflinePlayer(uuid).name ?: "Unknown"`). No tests required — adapters are trivial pass-throughs.
-  Evidence: ` `
+  Evidence: `src/main/kotlin/.../infrastructure/bukkit/BukkitClock.kt; .../BukkitNameLookup.kt; .../BukkitCommandExecutor.kt (bonus, needed by ServiceModule); .../Slf4jLogger.kt (PluginLoggerAdapter, bonus)`
 
 - [ ] **INFRA-07** — `GiveawayCommand` registration
   References: REQ-002, REQ-020
@@ -136,43 +136,43 @@ Goal: a player can run `/giveaway`, see the menu, click an active giveaway, and 
 
 ### TDD tasks — persistence adapters
 
-- [ ] **TDD-40** — RED: `ExposedGiveawayRepository` round-trip
+- [x] **TDD-40** — RED: `ExposedGiveawayRepository` round-trip
   References: REQ-001, REQ-022, implementation.md §3.3
   Tag: TDD
   Description: Integration test in `infrastructure/persistence` exercising save + findById + listActive against in-memory or @TempDir SQLite. Assert state survives a `transaction { }` boundary.
-  Evidence: ` `
+  Evidence: `docs/requirements.md#REQ-001,022; docs/implementation.md#3.3; src/main/kotlin/.../persistence/Tables.kt; src/main/kotlin/.../domain/Giveaway.kt; src/main/kotlin/.../domain/ports/GiveawayRepository.kt; Exposed transaction API`
 
-- [ ] **TDD-41** — GREEN: `ExposedGiveawayRepository` implementation
+- [x] **TDD-41** — GREEN: `ExposedGiveawayRepository` implementation
   References: REQ-001, REQ-022
   Tag: TDD
   Description: Implement `infrastructure/persistence/ExposedGiveawayRepository` against `GiveawaysTable`. Flip TDD-40 green.
-  Evidence: ` `
+  Evidence: `src/main/kotlin/.../persistence/ExposedGiveawayRepository.kt; uses Exposed upsert + selectAll().where; added GiveawayRepository.listByState port method`
 
-- [ ] **TDD-42** — RED: `ExposedEntryRepository` enforces composite PK
+- [x] **TDD-42** — RED: `ExposedEntryRepository` enforces composite PK
   References: REQ-003, REQ-004
   Tag: TDD
   Description: Integration test asserting `insert` then `hasEntered` returns true, a second `insert` throws (PK collision), and `playerUuidsFor` returns the inserted UUID.
-  Evidence: ` `
+  Evidence: `src/test/kotlin/.../persistence/ExposedEntryRepositoryTest.kt; org.jetbrains.exposed.exceptions.ExposedSQLException`
 
-- [ ] **TDD-43** — GREEN: `ExposedEntryRepository` implementation
+- [x] **TDD-43** — GREEN: `ExposedEntryRepository` implementation
   References: REQ-003, REQ-004
   Tag: TDD
   Description: Implement `infrastructure/persistence/ExposedEntryRepository`. Catch the PK collision in `insert` and rethrow as a typed exception (or document the raw `ExposedSQLException` if cheaper). Flip TDD-42 green.
-  Evidence: ` `
+  Evidence: `src/main/kotlin/.../persistence/ExposedEntryRepository.kt; raw ExposedSQLException surfaces on PK collision (EnterGiveaway use case handles via hasEntered guard, so callers never see it in practice)`
 
 ### TDD tasks — application
 
-- [ ] **TDD-44** — RED: `ListActiveGiveaways` returns annotated summaries
+- [x] **TDD-44** — RED: `ListActiveGiveaways` returns annotated summaries
   References: REQ-002
   Tag: TDD
   Description: Application test with mocked repos. Returns `List<GiveawaySummary(id, title, secondsRemaining, entryCount, alreadyEntered)>` for ACTIVE giveaways only, computed against a fake `Clock`. Each row's `alreadyEntered` flag reflects `EntryRepository.hasEntered(id, viewerUuid)`.
-  Evidence: ` `
+  Evidence: `src/test/kotlin/.../application/ListActiveGiveawaysTest.kt`
 
-- [ ] **TDD-45** — GREEN: `ListActiveGiveaways` use case + `GiveawaySummary`
+- [x] **TDD-45** — GREEN: `ListActiveGiveaways` use case + `GiveawaySummary`
   References: REQ-002
   Tag: TDD
   Description: Implement `application/ListActiveGiveaways` + `application/GiveawaySummary`. Add `GiveawayRepository.listByState(state)` port method. Flip TDD-44 green.
-  Evidence: ` `
+  Evidence: `src/main/kotlin/.../application/ListActiveGiveaways.kt; src/main/kotlin/.../application/GiveawaySummary.kt; Duration.between clamped to 0 for expired-but-not-yet-drawn giveaways`
 
 ### INFRA tasks — player GUI
 
