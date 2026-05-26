@@ -7,4 +7,5 @@ import java.util.UUID
 interface EntryRepository {
     fun hasEntered(giveawayId: GiveawayId, playerUuid: UUID): Boolean
     fun insert(entry: Entry)
+    fun playerUuidsFor(giveawayId: GiveawayId): List<UUID>
 }

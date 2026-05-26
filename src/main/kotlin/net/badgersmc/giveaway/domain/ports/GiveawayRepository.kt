@@ -5,4 +5,5 @@ import net.badgersmc.giveaway.domain.GiveawayId
 
 interface GiveawayRepository {
     fun findById(id: GiveawayId): Giveaway?
+    fun save(giveaway: Giveaway)
 }
