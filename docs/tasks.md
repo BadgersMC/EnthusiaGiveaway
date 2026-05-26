@@ -22,11 +22,11 @@ Tasks are ordered to honour state-machine and architectural dependencies. Indepe
   Description: Create build.gradle.kts, settings.gradle.kts, paper-plugin.yml, config.yml, .gitignore, README.md, and the four SPEAR docs. Konsist `LayerRulesTest` template substituted with `net.badgersmc.giveaway`. Initial commit lands.
   Evidence: `D:/BadgersMC-Dev/LumaSG/build.gradle.kts:1-100; D:/BadgersMC-Dev/LumaGuilds/build.gradle.kts:1-60; C:/Users/Noah/.claude/plugins/cache/BadgersMC-spear-plugin/spear/0.1.0/templates/LayerRulesTest.kt`
 
-- [ ] **INFRA-02** — Gradle wrapper + GitHub Actions build workflow
+- [x] **INFRA-02** — Gradle wrapper + GitHub Actions build workflow
   References: REQ-022
   Tag: INFRA
   Description: Run `gradle wrapper --gradle-version 8.10`. Add `.github/workflows/build.yml` running `./gradlew build` on push + PR. Verify `./gradlew test shadowJar` succeeds locally.
-  Evidence: ` `
+  Evidence: `gradle/wrapper/gradle-wrapper.properties (8.5→8.10); .github/workflows/build.yml (push main + PR, JDK 21 Temurin, Gradle cache, test --no-daemon; shadowJar skipped in CI — nexus-core/nexus-paper only in mavenLocal); ./gradlew test shadowJar --no-daemon BUILD SUCCESSFUL in 29s locally`
 
 - [ ] **INFRA-03** — SQLite schema migration runner
   References: REQ-001, REQ-022
