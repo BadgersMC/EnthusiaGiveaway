@@ -48,17 +48,17 @@ Tasks are ordered to honour state-machine and architectural dependencies. Indepe
   Description: Create `domain/Giveaway.kt` + `domain/GiveawayState.kt` with the transition function. Domain-only — no Bukkit imports. Flip TDD-10 to green.
   Evidence: `src/main/kotlin/net/badgersmc/giveaway/domain/Giveaway.kt; src/main/kotlin/net/badgersmc/giveaway/domain/GiveawayId.kt; src/main/kotlin/net/badgersmc/giveaway/domain/GiveawayState.kt; java.time.Instant + java.util.UUID (JDK stdlib)`
 
-- [ ] **TDD-12** — RED: `RandomDraw` picks k distinct, returns all if fewer
+- [x] **TDD-12** — RED: `RandomDraw` picks k distinct, returns all if fewer
   References: REQ-007, REQ-012, REQ-102
   Tag: TDD
   Description: Write `domain/RandomDrawTest.kt` asserting: picking k=3 from 100 returns 3 distinct elements; picking k=5 from 2 returns those 2. Use a seeded `kotlin.random.Random` port for determinism.
-  Evidence: ` `
+  Evidence: `docs/requirements.md#REQ-007; docs/requirements.md#REQ-012; docs/requirements.md#REQ-102; docs/implementation.md#3.1 (domain ports); kotlin.random.Random (Kotlin stdlib)`
 
-- [ ] **TDD-13** — GREEN: `SeededRandomDraw` implementation
+- [x] **TDD-13** — GREEN: `SeededRandomDraw` implementation
   References: REQ-007, REQ-012
   Tag: TDD
   Description: Implement `domain/RandomDraw.kt` port + `domain/SeededRandomDraw.kt`. Flip TDD-12 to green.
-  Evidence: ` `
+  Evidence: `src/main/kotlin/net/badgersmc/giveaway/domain/ports/RandomDraw.kt; src/main/kotlin/net/badgersmc/giveaway/domain/SeededRandomDraw.kt; kotlin.random.Random (Kotlin stdlib)`
 
 ### TDD tasks — application
 
