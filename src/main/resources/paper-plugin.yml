@@ -8,10 +8,6 @@ description: Scheduled giveaways with admin GUI, free entry, and celebratory win
 load: STARTUP
 dependencies:
   server:
-    Nexus:
-      load: BEFORE
-      required: true
-      join-classpath: true
     PlaceholderAPI:
       load: BEFORE
       required: false
