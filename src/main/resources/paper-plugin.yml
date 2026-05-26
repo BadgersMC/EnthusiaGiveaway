@@ -16,6 +16,11 @@ dependencies:
       load: BEFORE
       required: false
       join-classpath: true
+commands:
+  giveaway:
+    description: Open the giveaway menu (or admin menu with `/giveaway admin`).
+    usage: /giveaway [admin]
+    permission: enthusiagiveaway.use
 permissions:
   enthusiagiveaway.use:
     description: Allows opening the giveaway menu and entering giveaways.

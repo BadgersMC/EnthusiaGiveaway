@@ -14,6 +14,8 @@ import net.badgersmc.giveaway.infrastructure.bukkit.InMemoryWinnerRepository
 import net.badgersmc.giveaway.infrastructure.bukkit.NoOpCelebrationBroadcaster
 import net.badgersmc.giveaway.infrastructure.bukkit.NoOpPlaceholderExpander
 import net.badgersmc.giveaway.infrastructure.bukkit.PluginLoggerAdapter
+import net.badgersmc.giveaway.infrastructure.bukkit.GiveawayCommand
+import net.badgersmc.giveaway.infrastructure.menus.PlayerGiveawayMenu
 import net.badgersmc.giveaway.infrastructure.persistence.ExposedEntryRepository
 import net.badgersmc.giveaway.infrastructure.persistence.ExposedGiveawayRepository
 import org.bukkit.plugin.java.JavaPlugin
@@ -49,4 +51,9 @@ class ServiceModule(plugin: JavaPlugin) {
         giveaways, entries, winners, draw,
         nameLookup, placeholders, commands, celebration, logger, clock,
     )
+
+    // Bukkit-facing
+    val playerMenu = PlayerGiveawayMenu(listActive, enterGiveaway)
+    val giveawayCommand = GiveawayCommand(playerMenu)
 }
+

@@ -21,6 +21,10 @@ class EnthusiaGiveawayPlugin : JavaPlugin() {
 
         services = ServiceModule(this)
 
+        getCommand("giveaway")?.setExecutor(services.giveawayCommand)
+            ?: logger.warning("'giveaway' command not registered in paper-plugin.yml")
+        getCommand("giveaway")?.tabCompleter = services.giveawayCommand
+
         logger.info("EnthusiaGiveaway enabled. Schema migrated; SQLite file: ${dataFolder}/$dbFile.")
     }
 

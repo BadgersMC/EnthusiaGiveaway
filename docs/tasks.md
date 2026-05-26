@@ -128,11 +128,11 @@ Goal: a player can run `/giveaway`, see the menu, click an active giveaway, and 
   Description: Implement `infrastructure/bukkit/BukkitClock` (`Instant.now()`) and `BukkitNameLookup` (`Bukkit.getOfflinePlayer(uuid).name ?: "Unknown"`). No tests required — adapters are trivial pass-throughs.
   Evidence: `src/main/kotlin/.../infrastructure/bukkit/BukkitClock.kt; .../BukkitNameLookup.kt; .../BukkitCommandExecutor.kt (bonus, needed by ServiceModule); .../Slf4jLogger.kt (PluginLoggerAdapter, bonus)`
 
-- [ ] **INFRA-07** — `GiveawayCommand` registration
+- [x] **INFRA-07** — `GiveawayCommand` registration
   References: REQ-002, REQ-020
   Tag: INFRA
   Description: Implement Bukkit `CommandExecutor` + tab-completer for `/giveaway`. Routes bare `/giveaway` → `PlayerGiveawayMenu.open(player)`. Permission `enthusiagiveaway.use`. Register in `onEnable`.
-  Evidence: ` `
+  Evidence: `src/main/kotlin/.../infrastructure/bukkit/GiveawayCommand.kt; paper-plugin.yml commands.giveaway block; EnthusiaGiveawayPlugin.onEnable wires executor + tabCompleter; /giveaway admin returns placeholder until INFRA-09`
 
 ### TDD tasks — persistence adapters
 
@@ -176,11 +176,11 @@ Goal: a player can run `/giveaway`, see the menu, click an active giveaway, and 
 
 ### INFRA tasks — player GUI
 
-- [ ] **INFRA-08** — `PlayerGiveawayMenu` (InventoryFramework)
+- [x] **INFRA-08** — `PlayerGiveawayMenu` (InventoryFramework)
   References: REQ-002, REQ-003
   Tag: INFRA
   Description: Paginated chest GUI listing `GiveawaySummary` rows. Each row: title, lore with `secondsRemaining`, entry count, and "Click to enter" or "Entered ✓". Click calls `EnterGiveaway`; on `Success` refresh menu and play sound; on `AlreadyEntered`/`NotActive` show actionbar message. Reference `D:/BadgersMC-Dev/LumaGuilds/src/main/kotlin/.../guildsLib/menu/` for IF 0.11.6 idioms.
-  Evidence: ` `
+  Evidence: `src/main/kotlin/.../infrastructure/menus/PlayerGiveawayMenu.kt; IF ChestGui(6) + StaticPane(9,6); GuiItem click handler routes through EnterGiveaway use case + actionbar feedback; first 54 summaries shown (pagination deferred); D:/BadgersMC-Dev/LumaGuilds/src/main/kotlin/.../GuildInfoMenu.kt:42-72 (IF pattern reference)`
 
 ---
 
