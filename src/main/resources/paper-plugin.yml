@@ -1,0 +1,24 @@
+name: EnthusiaGiveaway
+version: '${version}'
+main: net.badgersmc.giveaway.infrastructure.bukkit.EnthusiaGiveawayPlugin
+api-version: '1.21'
+authors: [BadgersMC]
+description: Scheduled giveaways with admin GUI, free entry, and celebratory winner announcements.
+load: STARTUP
+dependencies:
+  server:
+    Nexus:
+      load: BEFORE
+      required: true
+      join-classpath: true
+    PlaceholderAPI:
+      load: BEFORE
+      required: false
+      join-classpath: true
+permissions:
+  enthusiagiveaway.use:
+    description: Allows opening the giveaway menu and entering giveaways.
+    default: true
+  enthusiagiveaway.admin:
+    description: Allows scheduling and cancelling giveaways.
+    default: op

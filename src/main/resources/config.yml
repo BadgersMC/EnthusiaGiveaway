@@ -1,0 +1,30 @@
+# EnthusiaGiveaway configuration
+
+storage:
+  # SQLite database file under the plugin data folder.
+  file: giveaways.db
+
+scheduler:
+  # How often (seconds) to poll for expired giveaways.
+  poll-interval-seconds: 1
+
+celebration:
+  # server | participants
+  broadcast-scope: server
+
+  # MiniMessage templates. Placeholders: <player>, <title>.
+  title: "<gradient:gold:yellow><bold>GIVEAWAY!</bold></gradient>"
+  subtitle: "<white><player> won!</white>"
+  message: "<gold><bold><player></bold> won <title>!</gold>"
+
+  pixel-art:
+    enabled: true
+    api-url: "https://starlightskins.lunareclipse.studio/render/default/<uuid>/face"
+    size: 8
+    character: "⬛"
+
+  fireworks:
+    enabled: true
+    count: 8
+
+broadcast-new-giveaway: true
