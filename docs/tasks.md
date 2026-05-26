@@ -36,17 +36,17 @@ Tasks are ordered to honour state-machine and architectural dependencies. Indepe
 
 ### TDD tasks — domain
 
-- [ ] **TDD-10** — RED: Giveaway state transitions
+- [x] **TDD-10** — RED: Giveaway state transitions
   References: REQ-007, REQ-013, implementation.md §3.1
   Tag: TDD
   Description: Write `src/test/kotlin/.../domain/GiveawayTest.kt` asserting legal transitions (SCHEDULED→ACTIVE→DRAWING→COMPLETED; *→CANCELLED) and illegal transitions throw `IllegalStateException`. Run, confirm red.
-  Evidence: ` `
+  Evidence: `docs/requirements.md#REQ-007; docs/requirements.md#REQ-013; docs/implementation.md#3.1; D:/BadgersMC-Dev/LumaSG/src/main/kotlin/net/lumalyte/lumasg/domain/GamePhase.kt:1-13; docs/tech-stack.md#3 (org.junit.jupiter:junit-jupiter:5.10.0 baseline)`
 
-- [ ] **TDD-11** — GREEN: Implement `Giveaway` + `GiveawayState`
+- [x] **TDD-11** — GREEN: Implement `Giveaway` + `GiveawayState`
   References: REQ-007, REQ-013, implementation.md §3.1
   Tag: TDD
   Description: Create `domain/Giveaway.kt` + `domain/GiveawayState.kt` with the transition function. Domain-only — no Bukkit imports. Flip TDD-10 to green.
-  Evidence: ` `
+  Evidence: `src/main/kotlin/net/badgersmc/giveaway/domain/Giveaway.kt; src/main/kotlin/net/badgersmc/giveaway/domain/GiveawayId.kt; src/main/kotlin/net/badgersmc/giveaway/domain/GiveawayState.kt; java.time.Instant + java.util.UUID (JDK stdlib)`
 
 - [ ] **TDD-12** — RED: `RandomDraw` picks k distinct, returns all if fewer
   References: REQ-007, REQ-012, REQ-102
