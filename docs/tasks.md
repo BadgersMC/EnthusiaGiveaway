@@ -74,17 +74,17 @@ Tasks are ordered to honour state-machine and architectural dependencies. Indepe
   Description: Implement `application/EnterGiveaway.kt`. Flip TDD-20 to green.
   Evidence: `src/main/kotlin/net/badgersmc/giveaway/application/EnterGiveaway.kt; src/main/kotlin/net/badgersmc/giveaway/application/EnterResult.kt; src/main/kotlin/net/badgersmc/giveaway/domain/Entry.kt; src/main/kotlin/net/badgersmc/giveaway/domain/ports/Clock.kt; src/main/kotlin/net/badgersmc/giveaway/domain/ports/GiveawayRepository.kt; src/main/kotlin/net/badgersmc/giveaway/domain/ports/EntryRepository.kt; Konsist LayerRulesTest re-enabled now that application/ has files`
 
-- [~] **TDD-22** — RED: `DrawWinners` orchestrates draw → command → broadcast
+- [x] **TDD-22** — RED: `DrawWinners` orchestrates draw → command → broadcast
   References: REQ-007, REQ-008, REQ-009, REQ-010, REQ-012
   Tag: TDD
   Description: Write `application/DrawWinnersTest.kt` with mocks for all ports. Assert order: state→DRAWING, RandomDraw called, winners persisted, CommandExecutor called once per winner with expanded placeholders, CelebrationBroadcaster called, state→COMPLETED. Separate test for empty command (REQ-010).
   Evidence: `docs/requirements.md#REQ-007,008,009,010,012; docs/implementation.md#3.1,#3.2,#4.3; src/main/kotlin/net/badgersmc/giveaway/domain/Giveaway.kt; src/main/kotlin/net/badgersmc/giveaway/domain/ports/RandomDraw.kt; io.mockk (build.gradle.kts baseline)`
 
-- [ ] **TDD-23** — GREEN: `DrawWinners` use case
+- [x] **TDD-23** — GREEN: `DrawWinners` use case
   References: REQ-007, REQ-008, REQ-009, REQ-010, REQ-012
   Tag: TDD
   Description: Implement `application/DrawWinners.kt`. Flip TDD-22 to green.
-  Evidence: ` `
+  Evidence: `src/main/kotlin/net/badgersmc/giveaway/application/DrawWinners.kt; src/main/kotlin/net/badgersmc/giveaway/application/DrawResult.kt; src/main/kotlin/net/badgersmc/giveaway/domain/Winner.kt; src/main/kotlin/net/badgersmc/giveaway/domain/WinnerHandle.kt; new ports WinnerRepository, CommandExecutor, PlaceholderExpander, PlayerNameLookup, CelebrationBroadcaster, Logger; GiveawayRepository.save + EntryRepository.playerUuidsFor added`
 
 ### TDD tasks — architecture
 
