@@ -18,10 +18,14 @@ import net.badgersmc.giveaway.infrastructure.bukkit.NoOpCelebrationBroadcaster
 import net.badgersmc.giveaway.infrastructure.bukkit.NoOpPlaceholderExpander
 import net.badgersmc.giveaway.infrastructure.bukkit.PluginLoggerAdapter
 import net.badgersmc.giveaway.infrastructure.bukkit.GiveawayCommand
+import net.badgersmc.giveaway.infrastructure.menus.AdminGiveawayMenu
 import net.badgersmc.giveaway.infrastructure.menus.PlayerGiveawayMenu
+import net.badgersmc.giveaway.infrastructure.menus.ScheduleWizard
+import net.badgersmc.giveaway.infrastructure.papi.PlaceholderApiExpander
 import net.badgersmc.giveaway.infrastructure.persistence.ExposedEntryRepository
 import net.badgersmc.giveaway.infrastructure.persistence.ExposedGiveawayRepository
 import net.badgersmc.giveaway.infrastructure.persistence.ExposedWinnerRepository
+import net.badgersmc.giveaway.infrastructure.schedule.BukkitTickScheduler
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
@@ -34,14 +38,14 @@ import org.bukkit.plugin.java.JavaPlugin
  * infrastructure-only types (menus, commands, listeners), wire `NexusContext`
  * alongside this module and pass these instances as `externalBeans`.
  */
-class ServiceModule(plugin: JavaPlugin) {
+class ServiceModule(private val plugin: JavaPlugin) {
 
     // Domain ports → infra adapters
     val clock = BukkitClock()
     val nameLookup = BukkitNameLookup()
     val commands = BukkitCommandExecutor()
     val logger = PluginLoggerAdapter(plugin.logger)
-    val placeholders: PlaceholderExpander = NoOpPlaceholderExpander()        // INFRA-12 replaces
+    val placeholders: PlaceholderExpander = PlaceholderApiExpander()
     val celebration: CelebrationBroadcaster = NoOpCelebrationBroadcaster()   // INFRA-15 replaces
     val winners: WinnerRepository = ExposedWinnerRepository()
     val giveaways = ExposedGiveawayRepository()
@@ -63,6 +67,17 @@ class ServiceModule(plugin: JavaPlugin) {
 
     // Bukkit-facing
     val playerMenu = PlayerGiveawayMenu(listActive, enterGiveaway)
-    val giveawayCommand = GiveawayCommand(playerMenu)
+    val scheduleWizard = ScheduleWizard(scheduleGiveaway)
+    val adminMenu = AdminGiveawayMenu(giveaways, cancelGiveaway, scheduleWizard)
+    val giveawayCommand = GiveawayCommand(playerMenu, adminMenu)
+
+    val scheduler = BukkitTickScheduler(
+        plugin = plugin,
+        giveaways = giveaways,
+        drawWinners = drawWinners,
+        clock = clock,
+        logger = logger,
+        pollIntervalSeconds = plugin.config.getLong("scheduler.poll-interval-seconds", 1L),
+    )
 }
 

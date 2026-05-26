@@ -236,41 +236,41 @@ Goal: an admin can schedule a giveaway via GUI wizard, see scheduled/active give
 
 ### INFRA tasks — admin GUI + scheduling
 
-- [ ] **INFRA-09** — `AdminGiveawayMenu` (InventoryFramework)
+- [x] **INFRA-09** — `AdminGiveawayMenu` (InventoryFramework)
   References: REQ-005, REQ-021
   Tag: INFRA
   Description: Chest GUI listing SCHEDULED + ACTIVE giveaways with cancel buttons. A "Schedule new" button opens `ScheduleWizard`. Permission `enthusiagiveaway.admin`.
   Evidence: ` `
 
-- [ ] **INFRA-10** — `ScheduleWizard` (anvil text input chain)
+- [x] **INFRA-10** — `ScheduleWizard` (anvil text input chain)
   References: REQ-006
   Tag: INFRA
   Description: Sequential IF anvil prompts: title → duration (parse `1h30m`/`45m`/`2d` via dedicated parser) → command → winner count → confirm screen. On confirm, call `ScheduleGiveaway`. On any invalid input, re-prompt with hint. Reuse the duration parser as a pure function (covered by its own micro-test, TDD-57 if needed).
   Evidence: ` `
 
-- [ ] **INFRA-11** — `BukkitTickScheduler` + `DrawWinners` dispatch
+- [x] **INFRA-11** — `BukkitTickScheduler` + `DrawWinners` dispatch
   References: REQ-007, REQ-040
   Tag: INFRA
   Description: Bukkit task scheduled every `scheduler.poll-interval-seconds` (default 1s) on the Nexus `BukkitDispatcher`. Loads `GiveawayRepository.listByState(ACTIVE)` filtered by `endsAt <= clock.now()`, dispatches each through `DrawWinners` in a coroutine. Must never block main thread > 50ms (REQ-040) — move heavy work off-main with `withContext(Dispatchers.IO)`.
   Evidence: ` `
 
-- [ ] **INFRA-12** — `BukkitCommandExecutor` + `PlaceholderApiExpander` adapters
+- [x] **INFRA-12** — `BukkitCommandExecutor` + `PlaceholderApiExpander` adapters
   References: REQ-008
   Tag: INFRA
   Description: `BukkitCommandExecutor` dispatches via `Bukkit.dispatchCommand(consoleSender, line)` on the main thread. `PlaceholderApiExpander` calls `PlaceholderAPI.setPlaceholders(offlinePlayer, template)` if PAPI is loaded, otherwise returns the template unchanged. Also replaces `<player>` / `<name>` literally (matches LumaSG pattern).
   Evidence: ` `
 
-- [ ] **INFRA-13** — `Slf4jLogger` adapter
+- [x] **INFRA-13** — `Slf4jLogger` adapter
   References: REQ-041, implementation.md §3.1
   Tag: INFRA
   Description: Bridge `domain.ports.Logger` to the plugin's `java.util.logging.Logger`. Implement `info` + `warn` pass-throughs.
-  Evidence: ` `
+  Evidence: `src/main/kotlin/.../infrastructure/bukkit/Slf4jLogger.kt (PluginLoggerAdapter wraps java.util.logging.Logger); wired in ServiceModule.logger; landed in M1 batch 2 (commit 1d9ac79)`
 
-- [ ] **INFRA-14** — Hook resume on `onEnable`
+- [x] **INFRA-14** — Hook resume on `onEnable`
   References: REQ-011
   Tag: INFRA
   Description: After `Migrations.run()` and Nexus bootstrap, resolve `ResumeGiveawaysOnStartup` and call it once. Log the count of giveaways resumed.
-  Evidence: ` `
+  Evidence: `EnthusiaGiveawayPlugin.onEnable calls services.resumeGiveawaysOnStartup.invoke() after ServiceModule wiring; landed in M2 use case batch (commit 593bdb8)`
 
 ---
 

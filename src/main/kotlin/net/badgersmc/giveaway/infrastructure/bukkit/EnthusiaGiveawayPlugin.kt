@@ -26,11 +26,13 @@ class EnthusiaGiveawayPlugin : JavaPlugin() {
         getCommand("giveaway")?.tabCompleter = services.giveawayCommand
 
         services.resumeGiveawaysOnStartup.invoke()
+        services.scheduler.start()
 
         logger.info("EnthusiaGiveaway enabled. Schema migrated; SQLite file: ${dataFolder}/$dbFile.")
     }
 
     override fun onDisable() {
+        if (::services.isInitialized) services.scheduler.stop()
         databaseFactory?.close()
         databaseFactory = null
     }

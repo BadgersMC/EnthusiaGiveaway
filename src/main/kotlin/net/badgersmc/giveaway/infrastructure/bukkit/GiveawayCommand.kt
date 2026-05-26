@@ -1,5 +1,6 @@
 package net.badgersmc.giveaway.infrastructure.bukkit
 
+import net.badgersmc.giveaway.infrastructure.menus.AdminGiveawayMenu
 import net.badgersmc.giveaway.infrastructure.menus.PlayerGiveawayMenu
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
@@ -8,6 +9,7 @@ import org.bukkit.entity.Player
 
 class GiveawayCommand(
     private val playerMenu: PlayerGiveawayMenu,
+    private val adminMenu: AdminGiveawayMenu,
 ) : TabExecutor {
 
     override fun onCommand(
@@ -34,8 +36,7 @@ class GiveawayCommand(
                     sender.sendMessage("§cYou don't have permission.")
                     return true
                 }
-                // INFRA-09 admin menu — placeholder until that lands
-                sender.sendMessage("§eAdmin menu coming soon (INFRA-09).")
+                adminMenu.open(sender)
             }
             else -> sender.sendMessage("§cUsage: /giveaway [admin]")
         }
