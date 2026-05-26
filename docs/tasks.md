@@ -62,17 +62,17 @@ Tasks are ordered to honour state-machine and architectural dependencies. Indepe
 
 ### TDD tasks — application
 
-- [ ] **TDD-20** — RED: `EnterGiveaway` rejects duplicate entry
+- [x] **TDD-20** — RED: `EnterGiveaway` rejects duplicate entry
   References: REQ-003, REQ-004
   Tag: TDD
   Description: Write `application/EnterGiveawayTest.kt` using Mockk fakes for `GiveawayRepository` + `EntryRepository`. Assert duplicate entry returns `EnterResult.AlreadyEntered` and does not call `EntryRepository.insert` twice.
-  Evidence: ` `
+  Evidence: `docs/requirements.md#REQ-003; docs/requirements.md#REQ-004; docs/implementation.md#3.1 (domain ports); docs/implementation.md#3.2 (application use cases); build.gradle.kts (io.mockk:mockk:1.13.10 baseline); io.mockk; src/main/kotlin/net/badgersmc/giveaway/domain/Giveaway.kt`
 
-- [ ] **TDD-21** — GREEN: `EnterGiveaway` use case
+- [x] **TDD-21** — GREEN: `EnterGiveaway` use case
   References: REQ-003, REQ-004
   Tag: TDD
   Description: Implement `application/EnterGiveaway.kt`. Flip TDD-20 to green.
-  Evidence: ` `
+  Evidence: `src/main/kotlin/net/badgersmc/giveaway/application/EnterGiveaway.kt; src/main/kotlin/net/badgersmc/giveaway/application/EnterResult.kt; src/main/kotlin/net/badgersmc/giveaway/domain/Entry.kt; src/main/kotlin/net/badgersmc/giveaway/domain/ports/Clock.kt; src/main/kotlin/net/badgersmc/giveaway/domain/ports/GiveawayRepository.kt; src/main/kotlin/net/badgersmc/giveaway/domain/ports/EntryRepository.kt; Konsist LayerRulesTest re-enabled now that application/ has files`
 
 - [ ] **TDD-22** — RED: `DrawWinners` orchestrates draw → command → broadcast
   References: REQ-007, REQ-008, REQ-009, REQ-010, REQ-012

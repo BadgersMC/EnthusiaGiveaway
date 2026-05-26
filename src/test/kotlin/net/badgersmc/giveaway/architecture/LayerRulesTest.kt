@@ -3,7 +3,6 @@ package net.badgersmc.giveaway.architecture
 import com.lemonappdev.konsist.api.Konsist
 import com.lemonappdev.konsist.api.architecture.KoArchitectureCreator.assertArchitecture
 import com.lemonappdev.konsist.api.architecture.Layer
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 /**
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.Test
 class LayerRulesTest {
 
     @Test
-    @Disabled("Re-enable when application/ has files (TDD-21 EnterGiveaway). Konsist's assertArchitecture preconditions on every declared Layer having >= 1 file.")
     fun `spear layer dependencies are correct`() {
         Konsist
             .scopeFromProduction()
