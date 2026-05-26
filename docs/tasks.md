@@ -110,11 +110,11 @@ Goal: a player can run `/giveaway`, see the menu, click an active giveaway, and 
 
 ### INFRA tasks
 
-- [ ] **INFRA-04** — Paper plugin loader for runtime libraries
+- [x] **INFRA-04** — Paper plugin loader for runtime libraries
   References: REQ-022, tech-stack.md §3
   Tag: INFRA
   Description: Add `EnthusiaGiveawayLoader` (PluginLoader) that uses Paper's `MavenLibraryResolver` to fetch Hikari, Exposed (core/dao/jdbc/java-time), sqlite-jdbc, and kotlinx-coroutines at startup. Wire `loader:` in `paper-plugin.yml`. Mirror the pattern in `D:/BadgersMC-Dev/LumaSG/src/main/kotlin/.../LumaSGLoader.kt`. Verify `./gradlew shadowJar` produces a jar that boots on a local Paper server.
-  Evidence: ` `
+  Evidence: `D:/BadgersMC-Dev/LumaSG/src/main/java/net/lumalyte/lumasg/LumaSGLoader.java:1-48 (pattern reference); io.papermc.paper.plugin.loader.PluginLoader; io.papermc.paper.plugin.loader.library.impl.MavenLibraryResolver; org.eclipse.aether (transitive via paper-api); build.gradle.kts (compileOnly: kotlin-stdlib, kotlinx-coroutines-core, exposed-*, HikariCP, sqlite-jdbc — all loader-resolved); paper-plugin.yml loader: field`
 
 - [ ] **INFRA-05** — Nexus DI module wiring
   References: tech-stack.md §3, implementation.md §3.9

@@ -1,6 +1,7 @@
 name: EnthusiaGiveaway
 version: '${version}'
 main: net.badgersmc.giveaway.infrastructure.bukkit.EnthusiaGiveawayPlugin
+loader: net.badgersmc.giveaway.loader.EnthusiaGiveawayLoader
 api-version: '1.21'
 authors: [BadgersMC]
 description: Scheduled giveaways with admin GUI, free entry, and celebratory winner announcements.
