@@ -5,4 +5,5 @@ import net.badgersmc.giveaway.domain.WinnerHandle
 
 interface CelebrationBroadcaster {
     fun announce(giveaway: Giveaway, winners: List<WinnerHandle>)
+    fun notifyCancellation(giveaway: Giveaway)
 }

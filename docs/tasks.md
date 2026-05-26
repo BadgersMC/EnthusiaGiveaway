@@ -190,37 +190,37 @@ Goal: an admin can schedule a giveaway via GUI wizard, see scheduled/active give
 
 ### TDD tasks — application use cases
 
-- [ ] **TDD-50** — RED: `ScheduleGiveaway` validates and persists
+- [x] **TDD-50** — RED: `ScheduleGiveaway` validates and persists
   References: REQ-006
   Tag: TDD
   Description: Application test asserting that valid input produces an ACTIVE giveaway with `endsAt = clock.now() + duration`, `maxWinners >= 1`, non-blank title, command persisted verbatim. Invalid inputs (negative duration, zero winners, blank title) return a typed `ScheduleResult.Invalid(field, reason)` and do not persist.
   Evidence: ` `
 
-- [ ] **TDD-51** — GREEN: `ScheduleGiveaway` use case + `ScheduleResult`
+- [x] **TDD-51** — GREEN: `ScheduleGiveaway` use case + `ScheduleResult`
   References: REQ-006
   Tag: TDD
   Description: Implement `application/ScheduleGiveaway` + sealed `ScheduleResult`. Flip TDD-50 green.
   Evidence: ` `
 
-- [ ] **TDD-52** — RED: `CancelGiveaway` transitions and notifies
+- [x] **TDD-52** — RED: `CancelGiveaway` transitions and notifies
   References: REQ-013
   Tag: TDD
   Description: Application test. SCHEDULED/ACTIVE → CANCELLED is allowed and persisted; `CelebrationBroadcaster.notifyCancellation(giveaway)` is called. DRAWING/COMPLETED → returns `CancelResult.AlreadyFinal` and does not transition.
   Evidence: ` `
 
-- [ ] **TDD-53** — GREEN: `CancelGiveaway` use case + add `notifyCancellation` to broadcaster port
+- [x] **TDD-53** — GREEN: `CancelGiveaway` use case + add `notifyCancellation` to broadcaster port
   References: REQ-013
   Tag: TDD
   Description: Extend `CelebrationBroadcaster` with `notifyCancellation(Giveaway)`. Implement `application/CancelGiveaway`. Flip TDD-52 green.
   Evidence: ` `
 
-- [ ] **TDD-54** — RED: `ResumeGiveawaysOnStartup` handles DRAWING + ACTIVE rows
+- [x] **TDD-54** — RED: `ResumeGiveawaysOnStartup` handles DRAWING + ACTIVE rows
   References: REQ-011
   Tag: TDD
   Description: Application test asserting: rows with state DRAWING get `DrawWinners` re-invoked (idempotent via composite PK on Winners); rows with state ACTIVE that are already past `endsAt` are drawn immediately; rows with state ACTIVE in the future are left alone.
   Evidence: ` `
 
-- [ ] **TDD-55** — GREEN: `ResumeGiveawaysOnStartup` use case
+- [x] **TDD-55** — GREEN: `ResumeGiveawaysOnStartup` use case
   References: REQ-011
   Tag: TDD
   Description: Implement `application/ResumeGiveawaysOnStartup`. Flip TDD-54 green.
@@ -228,7 +228,7 @@ Goal: an admin can schedule a giveaway via GUI wizard, see scheduled/active give
 
 ### TDD tasks — persistence
 
-- [ ] **TDD-56** — RED + GREEN: `ExposedWinnerRepository`
+- [x] **TDD-56** — RED + GREEN: `ExposedWinnerRepository`
   References: REQ-011
   Tag: TDD
   Description: Integration test exercising insert idempotency (re-insert of same `(giveawayId, playerUuid)` is a no-op or typed-skip, not a thrown exception, so resume-on-restart works). Implement to make green.

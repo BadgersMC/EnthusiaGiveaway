@@ -1,8 +1,11 @@
 package net.badgersmc.giveaway.infrastructure.di
 
+import net.badgersmc.giveaway.application.CancelGiveaway
 import net.badgersmc.giveaway.application.DrawWinners
 import net.badgersmc.giveaway.application.EnterGiveaway
 import net.badgersmc.giveaway.application.ListActiveGiveaways
+import net.badgersmc.giveaway.application.ResumeGiveawaysOnStartup
+import net.badgersmc.giveaway.application.ScheduleGiveaway
 import net.badgersmc.giveaway.domain.SeededRandomDraw
 import net.badgersmc.giveaway.domain.ports.CelebrationBroadcaster
 import net.badgersmc.giveaway.domain.ports.PlaceholderExpander
@@ -18,6 +21,7 @@ import net.badgersmc.giveaway.infrastructure.bukkit.GiveawayCommand
 import net.badgersmc.giveaway.infrastructure.menus.PlayerGiveawayMenu
 import net.badgersmc.giveaway.infrastructure.persistence.ExposedEntryRepository
 import net.badgersmc.giveaway.infrastructure.persistence.ExposedGiveawayRepository
+import net.badgersmc.giveaway.infrastructure.persistence.ExposedWinnerRepository
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
@@ -39,7 +43,7 @@ class ServiceModule(plugin: JavaPlugin) {
     val logger = PluginLoggerAdapter(plugin.logger)
     val placeholders: PlaceholderExpander = NoOpPlaceholderExpander()        // INFRA-12 replaces
     val celebration: CelebrationBroadcaster = NoOpCelebrationBroadcaster()   // INFRA-15 replaces
-    val winners: WinnerRepository = InMemoryWinnerRepository()               // TDD-56 replaces
+    val winners: WinnerRepository = ExposedWinnerRepository()
     val giveaways = ExposedGiveawayRepository()
     val entries = ExposedEntryRepository()
     val draw = SeededRandomDraw(System.nanoTime())
@@ -50,6 +54,11 @@ class ServiceModule(plugin: JavaPlugin) {
     val drawWinners = DrawWinners(
         giveaways, entries, winners, draw,
         nameLookup, placeholders, commands, celebration, logger, clock,
+    )
+    val scheduleGiveaway = ScheduleGiveaway(giveaways, clock)
+    val cancelGiveaway = CancelGiveaway(giveaways, celebration)
+    val resumeGiveawaysOnStartup = ResumeGiveawaysOnStartup(
+        giveaways, { drawWinners.invoke(it) }, clock,
     )
 
     // Bukkit-facing
