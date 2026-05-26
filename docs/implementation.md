@@ -130,10 +130,24 @@ Coordinator functions/classes for each user-visible action.
 - Layer: `infrastructure/`
 - `BukkitCelebrationBroadcaster` — port of LumaSG's [Celebration.kt](../../LumaSG/src/main/kotlin/net/lumalyte/lumasg/game/Celebration.kt). Fetches each winner's face render from Starlight Skins API, renders as colored pixel characters, sends with MiniMessage title + optional fireworks. Adapts the LumaSG single-winner shape to support N winners (one head block per winner).
 
-### 3.9 Nexus wiring (`infrastructure/nexus/`)
+### 3.9 DI wiring (`infrastructure/di/`)
 
 - Layer: `infrastructure/`
-- `ServiceModule` — registers all adapters as Nexus services; `EnthusiaGiveawayPlugin.onEnable` creates the `NexusContext`, scans for `@Service` annotations, wires use cases.
+- `ServiceModule(plugin)` — plain Kotlin DI graph. Wires every adapter + use case via constructor injection. Scanned-`@Service` Nexus wiring was deferred because SPEAR layer rules forbid `net.badgersmc.nexus` imports in `domain/` and `application/`; if reflective scan is needed later for infrastructure-only beans (menus, listeners), `NexusContext.create` can be added alongside this module and these instances passed as `externalBeans`.
+- Concrete bindings as of M2 + M3:
+  - `Clock` → `BukkitClock`
+  - `PlayerNameLookup` → `BukkitNameLookup`
+  - `CommandExecutor` → `BukkitCommandExecutor` (dispatches on main thread)
+  - `Logger` → `PluginLoggerAdapter` (wraps `java.util.logging.Logger`)
+  - `PlaceholderExpander` → `PlaceholderApiExpander` (PAPI optional)
+  - `CelebrationBroadcaster` → `BukkitCelebrationBroadcaster`
+  - `GiveawayRepository` → `ExposedGiveawayRepository`
+  - `EntryRepository` → `ExposedEntryRepository`
+  - `WinnerRepository` → `ExposedWinnerRepository`
+  - `RandomDraw` → `SeededRandomDraw(System.nanoTime())`
+  - Scheduler: `BukkitTickScheduler` (async timer, poll interval from config)
+  - Menus: `PlayerGiveawayMenu`, `AdminGiveawayMenu`, `ScheduleWizard`
+  - Command: `GiveawayCommand` (TabExecutor)
 
 ## 4. Data flows
 

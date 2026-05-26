@@ -3,6 +3,7 @@ package net.badgersmc.giveaway.application
 import net.badgersmc.giveaway.domain.Giveaway
 import net.badgersmc.giveaway.domain.GiveawayId
 import net.badgersmc.giveaway.domain.GiveawayState
+import net.badgersmc.giveaway.domain.ports.CelebrationBroadcaster
 import net.badgersmc.giveaway.domain.ports.Clock
 import net.badgersmc.giveaway.domain.ports.GiveawayRepository
 import java.util.UUID
@@ -10,6 +11,7 @@ import java.util.UUID
 class ScheduleGiveaway(
     private val giveaways: GiveawayRepository,
     private val clock: Clock,
+    private val celebration: CelebrationBroadcaster,
 ) {
     operator fun invoke(
         title: String,
@@ -34,6 +36,7 @@ class ScheduleGiveaway(
             createdBy = adminUuid,
         )
         giveaways.save(g)
+        celebration.notifyNew(g)
         return ScheduleResult.Created(g)
     }
 }

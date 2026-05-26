@@ -5,6 +5,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import net.badgersmc.giveaway.domain.Giveaway
 import net.badgersmc.giveaway.domain.GiveawayState
+import net.badgersmc.giveaway.domain.ports.CelebrationBroadcaster
 import net.badgersmc.giveaway.domain.ports.Clock
 import net.badgersmc.giveaway.domain.ports.GiveawayRepository
 import org.junit.jupiter.api.Test
@@ -22,7 +23,11 @@ class ScheduleGiveawayTest {
     private val admin = UUID.randomUUID()
 
     private fun useCase(repo: GiveawayRepository): ScheduleGiveaway =
-        ScheduleGiveaway(repo, mockk<Clock> { every { now() } returns now })
+        ScheduleGiveaway(
+            repo,
+            mockk<Clock> { every { now() } returns now },
+            mockk<CelebrationBroadcaster>(relaxed = true),
+        )
 
     @Test
     fun `valid input persists ACTIVE giveaway with endsAt = now + duration`() {

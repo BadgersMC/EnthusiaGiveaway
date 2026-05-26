@@ -17,6 +17,7 @@ import net.badgersmc.giveaway.infrastructure.bukkit.InMemoryWinnerRepository
 import net.badgersmc.giveaway.infrastructure.bukkit.NoOpCelebrationBroadcaster
 import net.badgersmc.giveaway.infrastructure.bukkit.NoOpPlaceholderExpander
 import net.badgersmc.giveaway.infrastructure.bukkit.PluginLoggerAdapter
+import net.badgersmc.giveaway.infrastructure.celebrate.BukkitCelebrationBroadcaster
 import net.badgersmc.giveaway.infrastructure.bukkit.GiveawayCommand
 import net.badgersmc.giveaway.infrastructure.menus.AdminGiveawayMenu
 import net.badgersmc.giveaway.infrastructure.menus.PlayerGiveawayMenu
@@ -46,7 +47,7 @@ class ServiceModule(private val plugin: JavaPlugin) {
     val commands = BukkitCommandExecutor()
     val logger = PluginLoggerAdapter(plugin.logger)
     val placeholders: PlaceholderExpander = PlaceholderApiExpander()
-    val celebration: CelebrationBroadcaster = NoOpCelebrationBroadcaster()   // INFRA-15 replaces
+    val celebration: CelebrationBroadcaster = BukkitCelebrationBroadcaster(plugin)
     val winners: WinnerRepository = ExposedWinnerRepository()
     val giveaways = ExposedGiveawayRepository()
     val entries = ExposedEntryRepository()
@@ -59,7 +60,7 @@ class ServiceModule(private val plugin: JavaPlugin) {
         giveaways, entries, winners, draw,
         nameLookup, placeholders, commands, celebration, logger, clock,
     )
-    val scheduleGiveaway = ScheduleGiveaway(giveaways, clock)
+    val scheduleGiveaway = ScheduleGiveaway(giveaways, clock, celebration)
     val cancelGiveaway = CancelGiveaway(giveaways, celebration)
     val resumeGiveawaysOnStartup = ResumeGiveawaysOnStartup(
         giveaways, { drawWinners.invoke(it) }, clock,

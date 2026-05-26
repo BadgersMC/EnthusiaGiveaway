@@ -27,8 +27,9 @@ class NoOpPlaceholderExpander : PlaceholderExpander {
 }
 
 class NoOpCelebrationBroadcaster : CelebrationBroadcaster {
-    override fun announce(giveaway: Giveaway, winners: List<WinnerHandle>) { /* M3 will implement */ }
-    override fun notifyCancellation(giveaway: Giveaway) { /* M3 will implement */ }
+    override fun announce(giveaway: Giveaway, winners: List<WinnerHandle>) { /* tests only */ }
+    override fun notifyCancellation(giveaway: Giveaway) { /* tests only */ }
+    override fun notifyNew(giveaway: Giveaway) { /* tests only */ }
 }
 
 class InMemoryWinnerRepository : WinnerRepository {

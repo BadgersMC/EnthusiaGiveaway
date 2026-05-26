@@ -17,6 +17,10 @@ celebration:
   subtitle: "<white><player> won!</white>"
   message: "<gold><bold><player></bold> won <title>!</gold>"
 
+  templates:
+    new: "<aqua>New giveaway: <title>!</aqua>"
+    cancelled: "<red>Giveaway cancelled: <title></red>"
+
   pixel-art:
     enabled: true
     api-url: "https://starlightskins.lunareclipse.studio/render/default/<uuid>/face"

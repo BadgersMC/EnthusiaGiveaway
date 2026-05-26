@@ -280,19 +280,19 @@ Goal: when winners are drawn, the configured audience sees a styled chat broadca
 
 ### INFRA tasks
 
-- [ ] **INFRA-15** — `BukkitCelebrationBroadcaster` (pixel-art head + title)
+- [x] **INFRA-15** — `BukkitCelebrationBroadcaster` (pixel-art head + title)
   References: REQ-009, implementation.md §3.8, docs/refs/starlight-skins.md
   Tag: INFRA
   Description: Port `renderPixelArtHead` from LumaSG. Fetches each winner's `face` render from Starlight Skins API (5s timeouts, silent skip on fail, `User-Agent: EnthusiaGiveaway-Plugin`). Renders an 8×8 grid of MiniMessage-coloured ⬛ characters with title/winner/border annotation lines beside the art. Broadcast scope (server | participants) from `config.yml`. Use Adventure `TextColor.color(r,g,b)` for per-pixel tint.
   Evidence: ` `
 
-- [ ] **INFRA-16** — Firework feedback (optional)
+- [x] **INFRA-16** — Firework feedback (optional)
   References: REQ-009
   Tag: INFRA
   Description: If `celebration.fireworks.enabled`, spawn `celebration.fireworks.count` randomly coloured fireworks at each winner's location, one every 250ms via coroutine. Each firework tagged with a metadata key so it can't be picked up. Skip silently if winner is offline.
   Evidence: ` `
 
-- [ ] **INFRA-17** — `notifyNew` + `notifyCancellation` broadcaster methods
+- [x] **INFRA-17** — `notifyNew` + `notifyCancellation` broadcaster methods
   References: REQ-006, REQ-013
   Tag: INFRA
   Description: Add lightweight broadcast methods to `CelebrationBroadcaster` for new-giveaway announcement (gated by `broadcast-new-giveaway: true`) and cancellation notice (visible to entrants only). MiniMessage templates from `config.yml` (add new keys: `templates.new`, `templates.cancelled`).
@@ -300,7 +300,7 @@ Goal: when winners are drawn, the configured audience sees a styled chat broadca
 
 ### DOC tasks
 
-- [ ] **DOC-50** — Update `implementation.md` §3 with adapter wiring
+- [x] **DOC-50** — Update `implementation.md` §3 with adapter wiring
   References: implementation.md §3.3–§3.9
   Tag: DOC
   Description: Once M1–M3 adapters land, revise §3.3 through §3.9 to reference the actual class names and explain any deviations from the original blueprint. Note the PaperLoader runtime-dep strategy in §3.9.
