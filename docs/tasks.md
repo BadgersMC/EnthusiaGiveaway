@@ -28,11 +28,11 @@ Tasks are ordered to honour state-machine and architectural dependencies. Indepe
   Description: Run `gradle wrapper --gradle-version 8.10`. Add `.github/workflows/build.yml` running `./gradlew build` on push + PR. Verify `./gradlew test shadowJar` succeeds locally.
   Evidence: `gradle/wrapper/gradle-wrapper.properties (8.5→8.10); .github/workflows/build.yml (push main + PR, JDK 21 Temurin, Gradle cache, test --no-daemon; shadowJar skipped in CI — nexus-core/nexus-paper only in mavenLocal); ./gradlew test shadowJar --no-daemon BUILD SUCCESSFUL in 29s locally`
 
-- [ ] **INFRA-03** — SQLite schema migration runner
+- [x] **INFRA-03** — SQLite schema migration runner
   References: REQ-001, REQ-022
   Tag: INFRA
   Description: Create `infrastructure/persistence/Migrations.kt` that opens the SQLite file under the plugin data folder via Hikari and runs Exposed `SchemaUtils.createMissingTablesAndColumns(Giveaways, Entries, Winners)`. Wire into `onEnable`.
-  Evidence: ` `
+  Evidence: `src/main/kotlin/.../infrastructure/persistence/{Tables,DatabaseFactory,Migrations}.kt; EnthusiaGiveawayPlugin.onEnable wires it; MigrationsIntegrationTest passes against on-disk SQLite in @TempDir; runtime classpath (Hikari/Exposed/sqlite-jdbc) needs PaperLoader (out of scope this task — TBD M1)`
 
 ### TDD tasks — domain
 
@@ -88,11 +88,11 @@ Tasks are ordered to honour state-machine and architectural dependencies. Indepe
 
 ### TDD tasks — architecture
 
-- [ ] **TDD-30** — Konsist layer test passes against initial domain types
+- [x] **TDD-30** — Konsist layer test passes against initial domain types
   References: REQ-100, REQ-101, implementation.md §2
   Tag: TDD
   Description: After TDD-11/13/21/23 land, confirm `LayerRulesTest` passes. If it fails, the violation indicates a misplaced import — fix by moving the type or introducing a port.
-  Evidence: ` `
+  Evidence: `src/test/kotlin/net/badgersmc/giveaway/architecture/LayerRulesTest.kt; ./gradlew test passes 1/1 on this class (21/21 total suite). Domain has zero infra/framework imports, application depends only on domain ports.`
 
 ### DOC tasks
 
