@@ -27,6 +27,7 @@ import net.badgersmc.giveaway.infrastructure.persistence.ExposedEntryRepository
 import net.badgersmc.giveaway.infrastructure.persistence.ExposedGiveawayRepository
 import net.badgersmc.giveaway.infrastructure.persistence.ExposedWinnerRepository
 import net.badgersmc.giveaway.infrastructure.schedule.BukkitTickScheduler
+import net.badgersmc.nexus.scheduler.NexusScheduler
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
@@ -72,8 +73,9 @@ class ServiceModule(private val plugin: JavaPlugin) {
     val adminMenu = AdminGiveawayMenu(giveaways, cancelGiveaway, scheduleWizard)
     val giveawayCommand = GiveawayCommand(playerMenu, adminMenu)
 
+    val nexusScheduler = NexusScheduler(plugin)
     val scheduler = BukkitTickScheduler(
-        plugin = plugin,
+        scheduler = nexusScheduler,
         giveaways = giveaways,
         drawWinners = drawWinners,
         clock = clock,

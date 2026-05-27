@@ -32,7 +32,10 @@ class EnthusiaGiveawayPlugin : JavaPlugin() {
     }
 
     override fun onDisable() {
-        if (::services.isInitialized) services.scheduler.stop()
+        if (::services.isInitialized) {
+            services.scheduler.stop()
+            services.nexusScheduler.cancelAll()
+        }
         databaseFactory?.close()
         databaseFactory = null
     }

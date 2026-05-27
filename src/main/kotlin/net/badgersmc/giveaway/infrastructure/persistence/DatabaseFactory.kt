@@ -1,7 +1,8 @@
 package net.badgersmc.giveaway.infrastructure.persistence
 
-import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import net.badgersmc.nexus.persistence.DatabaseFactory as NexusDatabaseFactory
+import net.badgersmc.nexus.persistence.DatabaseSpec
 import org.jetbrains.exposed.sql.Database
 import java.io.File
 
@@ -9,9 +10,10 @@ import java.io.File
  * Opens (or creates) the SQLite database file under the plugin data folder
  * and wires Exposed to it via a Hikari connection pool.
  *
- * SQLite is single-writer so `maximumPoolSize = 1` avoids `SQLITE_BUSY`
- * under contention — concurrency on the use-case side serialises through
- * Exposed transactions.
+ * The Hikari setup is delegated to `nexus-persistence`'s [NexusDatabaseFactory]
+ * so pool sizing rules (`maximumPoolSize = 1` for SQLite to avoid
+ * `SQLITE_BUSY`) and driver class wiring stay in one place. This class
+ * keeps the Exposed-specific bit — `Database.connect(dataSource)`.
  */
 class DatabaseFactory(dataFolder: File, dbFileName: String) {
 
@@ -19,13 +21,8 @@ class DatabaseFactory(dataFolder: File, dbFileName: String) {
 
     init {
         if (!dataFolder.exists()) dataFolder.mkdirs()
-        val dbPath = File(dataFolder, dbFileName).absolutePath
-        dataSource = HikariDataSource(HikariConfig().apply {
-            jdbcUrl = "jdbc:sqlite:$dbPath"
-            driverClassName = "org.sqlite.JDBC"
-            maximumPoolSize = 1
-            poolName = "EnthusiaGiveaway-SQLite"
-        })
+        val dbFile = File(dataFolder, dbFileName)
+        dataSource = NexusDatabaseFactory.open(DatabaseSpec.Sqlite(dbFile))
         Database.connect(dataSource)
     }
 
