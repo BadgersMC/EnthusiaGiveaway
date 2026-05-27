@@ -13,7 +13,24 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://jitpack.io")
-    mavenLocal() // nexus-core, nexus-paper
+
+    // Nexus releases — GitHub Packages. Needs gpr.user + gpr.token in
+    // ~/.gradle/gradle.properties (or GITHUB_ACTOR + GITHUB_TOKEN env on CI).
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/BadgersMC/nexus")
+        credentials {
+            username = providers.gradleProperty("gpr.user").orNull
+                ?: System.getenv("GITHUB_ACTOR")
+            password = providers.gradleProperty("gpr.token").orNull
+                ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
+
+    // Opt-in to a locally-published Nexus snapshot: ./gradlew -PuseMavenLocal=true …
+    if (providers.gradleProperty("useMavenLocal").orNull == "true") {
+        mavenLocal()
+    }
 }
 
 dependencies {
