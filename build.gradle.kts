@@ -38,11 +38,11 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
 
     // Nexus DI + coroutines bridge (shaded)
-    implementation("net.badgersmc:nexus-core:1.11.0")
-    implementation("net.badgersmc:nexus-paper:1.11.0")
-    implementation("net.badgersmc:nexus-persistence:1.11.0")
-    implementation("net.badgersmc:nexus-scheduler:1.11.0")
-    implementation("net.badgersmc:nexus-paper-loader:1.11.0")
+    implementation("net.badgersmc:nexus-core:2.0.0")
+    implementation("net.badgersmc:nexus-paper:2.0.0")
+    implementation("net.badgersmc:nexus-persistence:2.0.0")
+    implementation("net.badgersmc:nexus-scheduler:2.0.0")
+    implementation("net.badgersmc:nexus-paper-loader:2.0.0")
 
     // Kotlin + coroutines (downloaded at runtime by PaperLoader)
     compileOnly(kotlin("stdlib"))

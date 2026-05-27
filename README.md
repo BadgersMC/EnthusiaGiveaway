@@ -8,14 +8,14 @@ Follows the **SPEAR** development methodology — see `docs/`.
 
 - Kotlin 2.1 on JDK 21
 - Paper 1.21.11 API
-- [Nexus](https://github.com/BadgersMC/Nexus) 1.11.0 — DI, coroutines, persistence, scheduler, paper-loader (shaded under `net.badgersmc.giveaway.libs.nexus.*`)
+- [Nexus](https://github.com/BadgersMC/Nexus) 2.0.0 — DI, coroutines, persistence, scheduler, paper-loader (shaded under `net.badgersmc.giveaway.libs.nexus.*`)
 - InventoryFramework 0.11.6 for GUI menus
 - SQLite + HikariCP + Exposed for persistence
 - PlaceholderAPI (optional) for command placeholder expansion
 
 ## Building locally
 
-Nexus 1.11.0 is published to [BadgersMC GitHub Packages](https://github.com/orgs/BadgersMC/packages?repo_name=Nexus). Add credentials once to `~/.gradle/gradle.properties`:
+Nexus 2.0.0 is published to [BadgersMC GitHub Packages](https://github.com/orgs/BadgersMC/packages?repo_name=Nexus). Add credentials once to `~/.gradle/gradle.properties`:
 
 ```properties
 gpr.user=<your-github-username>
