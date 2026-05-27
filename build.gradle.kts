@@ -14,18 +14,8 @@ repositories {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://jitpack.io")
 
-    // Nexus releases — GitHub Packages. Needs gpr.user + gpr.token in
-    // ~/.gradle/gradle.properties (or GITHUB_ACTOR + GITHUB_TOKEN env on CI).
-    maven {
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/BadgersMC/Nexus")
-        credentials {
-            username = providers.gradleProperty("gpr.user").orNull
-                ?: System.getenv("GITHUB_ACTOR")
-            password = providers.gradleProperty("gpr.token").orNull
-                ?: System.getenv("GITHUB_TOKEN")
-        }
-    }
+    // Nexus releases — served via JitPack (jitpack.io already declared above).
+    // The repo at https://github.com/BadgersMC/Nexus is public; no token needed.
 
     // Opt-in to a locally-published Nexus snapshot: ./gradlew -PuseMavenLocal=true …
     if (providers.gradleProperty("useMavenLocal").orNull == "true") {
@@ -38,11 +28,11 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
 
     // Nexus DI + coroutines bridge (shaded)
-    implementation("net.badgersmc:nexus-core:2.0.0")
-    implementation("net.badgersmc:nexus-paper:2.0.0")
-    implementation("net.badgersmc:nexus-persistence:2.0.0")
-    implementation("net.badgersmc:nexus-scheduler:2.0.0")
-    implementation("net.badgersmc:nexus-paper-loader:2.0.0")
+    implementation("com.github.BadgersMC.Nexus:nexus-core:v2.1.1")
+    implementation("com.github.BadgersMC.Nexus:nexus-paper:v2.1.1")
+    implementation("com.github.BadgersMC.Nexus:nexus-persistence:v2.1.1")
+    implementation("com.github.BadgersMC.Nexus:nexus-scheduler:v2.1.1")
+    implementation("com.github.BadgersMC.Nexus:nexus-paper-loader:v2.1.1")
 
     // Kotlin + coroutines (downloaded at runtime by PaperLoader)
     compileOnly(kotlin("stdlib"))
