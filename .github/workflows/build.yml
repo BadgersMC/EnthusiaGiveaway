@@ -36,9 +36,14 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # NOTE: shadowJar is intentionally omitted here because this plugin shades
-      # net.badgersmc:nexus-core / nexus-paper, which are resolved from mavenLocal
-      # and are not published to a public repository. CI cannot resolve them, so
-      # we run tests only. Local devs verify `./gradlew test shadowJar` before push.
-      - name: Run tests
-        run: ./gradlew test --no-daemon --stacktrace
+      # Nexus is resolved via JitPack from github.com/BadgersMC/Nexus — public,
+      # no auth required. Both test and shadowJar can run on CI now.
+      - name: Test + shadowJar
+        run: ./gradlew test shadowJar --no-daemon --stacktrace
+
+      - name: Upload shadowJar
+        uses: actions/upload-artifact@v4
+        with:
+          name: EnthusiaGiveaway
+          path: build/libs/*.jar
+          if-no-files-found: error
