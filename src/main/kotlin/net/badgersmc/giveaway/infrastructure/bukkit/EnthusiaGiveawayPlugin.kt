@@ -21,9 +21,12 @@ class EnthusiaGiveawayPlugin : JavaPlugin() {
 
         services = ServiceModule(this)
 
-        getCommand("giveaway")?.setExecutor(services.giveawayCommand)
-            ?: logger.warning("'giveaway' command not registered in paper-plugin.yml")
-        getCommand("giveaway")?.tabCompleter = services.giveawayCommand
+        // Paper plugins cannot call getCommand() with YAML-declared commands.
+        // Register our TabExecutor via the server's CommandMap directly.
+        server.commandMap.register(
+            "enthusiagiveaway",
+            GiveawayBukkitCommand(services.giveawayCommand),
+        )
 
         services.resumeGiveawaysOnStartup.invoke()
         services.scheduler.start()
