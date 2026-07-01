@@ -29,7 +29,9 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Build shadowJar
-        run: ./gradlew shadowJar --no-daemon
+        run: |
+          chmod +x ./gradlew
+          ./gradlew shadowJar --no-daemon
 
       - name: Read version
         id: version
