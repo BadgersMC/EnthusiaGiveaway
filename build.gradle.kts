@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "net.badgersmc.giveaway"
-version = "0.1.0"
+version = findProperty("releaseVersion")?.toString() ?: "0.1.0"
 
 repositories {
     mavenCentral()

@@ -8,43 +8,49 @@ jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # create release + upload asset
+      contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12  # v4.7.1
         with:
           distribution: temurin
           java-version: 21
 
-      - name: Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      - name: Bump version
+        id: bump
+        run: |
+          LATEST=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -1)
+          if [ -z "$LATEST" ]; then
+            BASE=$(grep -oP 'findProperty.*\?:\s*"\K[^"]+' build.gradle.kts)
+            MAJOR=$(echo "$BASE" | cut -d. -f1)
+            MINOR=$(echo "$BASE" | cut -d. -f2)
+            PATCH=$(echo "$BASE" | cut -d. -f3)
+          else
+            VER="${LATEST#v}"
+            MAJOR=$(echo "$VER" | cut -d. -f1)
+            MINOR=$(echo "$VER" | cut -d. -f2)
+            PATCH=$(echo "$VER" | cut -d. -f3)
+          fi
+          NEXT="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          echo "Latest tag: ${LATEST:-none}, bumping to v$NEXT"
+          echo "version=$NEXT" >> "$GITHUB_OUTPUT"
 
       - name: Build shadowJar
-        run: |
-          chmod +x ./gradlew
-          ./gradlew shadowJar --no-daemon
-
-      - name: Read version
-        id: version
-        run: |
-          VER=$(grep '^version = ' build.gradle.kts | sed 's/.*"\(.*\)".*/\1/')
-          echo "version=$VER" >> "$GITHUB_OUTPUT"
+        env:
+          RELEASE_VERSION: ${{ steps.bump.outputs.version }}
+        run: ./gradlew shadowJar --no-daemon -PreleaseVersion="$RELEASE_VERSION"
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65  # v2
         with:
-          tag_name: v${{ steps.version.outputs.version }}
-          name: EnthusiaGiveaway v${{ steps.version.outputs.version }}
-          files: build/libs/EnthusiaGiveaway-${{ steps.version.outputs.version }}.jar
+          tag_name: v${{ steps.bump.outputs.version }}
+          name: EnthusiaGiveaway v${{ steps.bump.outputs.version }}
+          files: build/libs/EnthusiaGiveaway-${{ steps.bump.outputs.version }}.jar
           generate_release_notes: true
           fail_on_unmatched_files: true
           make_latest: true
