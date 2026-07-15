@@ -20,6 +20,7 @@ import net.badgersmc.giveaway.infrastructure.bukkit.PluginLoggerAdapter
 import net.badgersmc.giveaway.infrastructure.celebrate.BukkitCelebrationBroadcaster
 import net.badgersmc.giveaway.infrastructure.bukkit.GiveawayCommand
 import net.badgersmc.giveaway.infrastructure.menus.AdminGiveawayMenu
+import net.badgersmc.giveaway.infrastructure.menus.ChatPromptListener
 import net.badgersmc.giveaway.infrastructure.menus.PlayerGiveawayMenu
 import net.badgersmc.giveaway.infrastructure.menus.ScheduleWizard
 import net.badgersmc.giveaway.infrastructure.papi.PlaceholderApiExpander
@@ -68,8 +69,9 @@ class ServiceModule(private val plugin: JavaPlugin) {
     )
 
     // Bukkit-facing
+    val chatPrompt = ChatPromptListener()
     val playerMenu = PlayerGiveawayMenu(listActive, enterGiveaway)
-    val scheduleWizard = ScheduleWizard(scheduleGiveaway)
+    val scheduleWizard = ScheduleWizard(scheduleGiveaway, chatPrompt)
     val adminMenu = AdminGiveawayMenu(giveaways, cancelGiveaway, scheduleWizard)
     val giveawayCommand = GiveawayCommand(playerMenu, adminMenu)
 

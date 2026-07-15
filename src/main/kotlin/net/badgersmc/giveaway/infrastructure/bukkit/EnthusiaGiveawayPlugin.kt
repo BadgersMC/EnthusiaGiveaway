@@ -21,6 +21,8 @@ class EnthusiaGiveawayPlugin : JavaPlugin() {
 
         services = ServiceModule(this)
 
+        server.pluginManager.registerEvents(services.chatPrompt, this)
+
         // Paper plugins cannot call getCommand() with YAML-declared commands.
         // Register our TabExecutor via the server's CommandMap directly.
         server.commandMap.register(
