@@ -5,11 +5,14 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.plugin.java.JavaPlugin
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 /** Captures a single chat input from a player, then unregisters. */
-class ChatPromptListener : Listener {
+class ChatPromptListener(
+    private val plugin: JavaPlugin,
+) : Listener {
 
     private val callbacks = ConcurrentHashMap<UUID, (String) -> Unit>()
 
@@ -26,6 +29,9 @@ class ChatPromptListener : Listener {
         val callback = callbacks.remove(event.player.uniqueId) ?: return
         event.isCancelled = true
         val message = PlainTextComponentSerializer.plainText().serialize(event.message())
-        callback(message)
+        // AsyncChatEvent fires off the main thread — schedule the callback
+        // synchronously so InventoryOpenEvent (triggered by ChestGui.show)
+        // runs on the server thread.
+        plugin.server.scheduler.runTask(plugin, Runnable { callback(message) })
     }
 }

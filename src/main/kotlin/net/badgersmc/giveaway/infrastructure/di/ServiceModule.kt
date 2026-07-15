@@ -69,7 +69,7 @@ class ServiceModule(private val plugin: JavaPlugin) {
     )
 
     // Bukkit-facing
-    val chatPrompt = ChatPromptListener()
+    val chatPrompt = ChatPromptListener(plugin)
     val playerMenu = PlayerGiveawayMenu(listActive, enterGiveaway)
     val scheduleWizard = ScheduleWizard(scheduleGiveaway, chatPrompt)
     val adminMenu = AdminGiveawayMenu(giveaways, cancelGiveaway, scheduleWizard)
