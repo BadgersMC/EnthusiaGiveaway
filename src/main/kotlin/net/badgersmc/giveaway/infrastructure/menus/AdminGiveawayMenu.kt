@@ -131,7 +131,7 @@ class AdminGiveawayMenu(
             }
             pane.addItem(GuiItem(item) { event ->
                 event.isCancelled = true
-                val result = startFromTemplate.invoke(t.name)
+                val result = startFromTemplate.invoke(t.name, player.uniqueId)
                 when (result) {
                     is StartFromTemplateResult.Created -> {
                         player.closeInventory()

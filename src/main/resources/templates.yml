@@ -13,7 +13,7 @@ templates:
   diamond-stack:
     title: "Diamond Stack Giveaway"
     description: "Win a stack of diamonds!"
-    command: "give @p diamond 64"
+    command: "give <player> diamond 64"
     max_winners: 1
     duration: "PT10M"
 

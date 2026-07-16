@@ -22,8 +22,12 @@ object TemplateLoader {
         val yaml = YamlConfiguration.loadConfiguration(file)
         val section = yaml.getConfigurationSection("templates") ?: return emptyList()
 
-        return section.getKeys(false).map { key ->
-            val cfg = section.getConfigurationSection(key)!!
+        return section.getKeys(false).mapNotNull { key ->
+            val cfg = section.getConfigurationSection(key)
+            if (cfg == null) {
+                pluginDataFolder.let { java.util.logging.Logger.getLogger("EnthusiaGiveaway").warning("Template '$key' is not a section — skipping") }
+                return@mapNotNull null
+            }
             Template(
                 name = key,
                 title = cfg.getString("title") ?: key,
@@ -35,6 +39,12 @@ object TemplateLoader {
         }
     }
 
-    private fun parseDuration(raw: String): Long =
-        runCatching { Duration.parse(raw).seconds }.getOrDefault(300L)
+    private fun parseDuration(raw: String): Long {
+        val result = runCatching { Duration.parse(raw).seconds }
+        result.exceptionOrNull()?.let {
+            java.util.logging.Logger.getLogger("EnthusiaGiveaway")
+                .warning("Invalid duration '$raw' in templates.yml — falling back to 300s")
+        }
+        return result.getOrDefault(300L)
+    }
 }

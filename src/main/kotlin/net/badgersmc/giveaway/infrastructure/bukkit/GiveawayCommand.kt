@@ -23,14 +23,19 @@ class GiveawayCommand(
     ): Boolean {
         val sub = args.firstOrNull()?.lowercase()
 
-        // Console template command (automation, works from console or player)
+        // Console template command (console always allowed, players need admin perm)
         if (sub == "template") {
             val templateName = args.getOrNull(1)?.lowercase()
             if (templateName == null) {
                 sender.sendMessage("§cUsage: /giveaway template <name>")
                 return true
             }
-            when (val result = startFromTemplate.invoke(templateName)) {
+            if (sender is Player && !sender.hasPermission("enthusiagiveaway.admin")) {
+                sender.sendMessage("§cYou don't have permission.")
+                return true
+            }
+            val adminUuid = if (sender is Player) sender.uniqueId else java.util.UUID(0, 0)
+            when (val result = startFromTemplate.invoke(templateName, adminUuid)) {
                 is StartFromTemplateResult.Created ->
                     sender.sendMessage("§aStarted template giveaway: ${result.giveaway.title}")
                 StartFromTemplateResult.NotFound ->

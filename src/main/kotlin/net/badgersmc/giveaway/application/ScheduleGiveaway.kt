@@ -19,6 +19,7 @@ class ScheduleGiveaway(
         command: String,
         maxWinners: Int,
         adminUuid: UUID,
+        description: String = "",
     ): ScheduleResult {
         if (title.isBlank()) return ScheduleResult.Invalid("title", "must not be blank")
         if (durationSeconds <= 0) return ScheduleResult.Invalid("durationSeconds", "must be > 0")
@@ -28,6 +29,7 @@ class ScheduleGiveaway(
         val g = Giveaway(
             id = GiveawayId(UUID.randomUUID()),
             title = title,
+            description = description,
             command = command,
             scheduledAt = now,
             endsAt = now.plusSeconds(durationSeconds),
