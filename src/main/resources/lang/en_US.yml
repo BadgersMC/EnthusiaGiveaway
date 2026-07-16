@@ -1,0 +1,54 @@
+# EnthusiaGiveaway — English (US) language strings
+# Format: Adventure MiniMessage with legacy § fallback support
+
+prefix: "<gold>[Giveaway]</gold> "
+
+menu:
+  admin:
+    title: "Giveaway Admin"
+    schedule: "<green>Schedule New</green>"
+    templates: "<aqua>Start from Template</aqua>"
+    no_giveaways: "<gray>No scheduled or active giveaways</gray>"
+    state_active: "<green>Active</green>"
+    state_scheduled: "<gray>Scheduled</gray>"
+    cancel_hint: "<red>Shift-click to cancel</red>"
+
+  player:
+    title: "Active Giveaways"
+    no_active: "<gray>No active giveaways</gray>"
+    time_remaining: "<yellow>Time remaining: <time></yellow>"
+    entries: "<gray>Entries: <entries></gray>"
+    already_entered: "<green>✓ Entered</green>"
+    click_to_enter: "<aqua>Click to enter</aqua>"
+    entered_bar: "<green>Entered: <title></green>"
+    already_entered_bar: "<gray>You are already entered.</gray>"
+    not_found_bar: "<red>This giveaway no longer exists.</red>"
+    not_active_bar: "<red>This giveaway is not active.</red>"
+
+  templates:
+    title: "Start from Template"
+    back: "<gray>← Back</gray>"
+
+wizard:
+  title_prompt: "<gold>Enter giveaway title:</gold>"
+  title_blank: "<red>Title must not be blank.</red>"
+  duration_prompt: "<gold>Enter duration (e.g. 1h30m, 45m, 2d):</gold>"
+  duration_invalid: "<red>Invalid duration. Try 1h30m, 45m, 2d.</red>"
+  command_prompt: "<gold>Enter console command (use <aqua><player></aqua> as placeholder):</gold>"
+  winners_prompt: "<gold>Enter number of winners:</gold>"
+  winners_invalid: "<red>Winner count must be a positive integer.</red>"
+  confirm_title: "Confirm giveaway"
+  scheduled: "<green>Scheduled <title></green>"
+  schedule_failed: "<red>Could not schedule: <reason></red>"
+
+command:
+  player_only: "<red>Only players can run this command.</red>"
+  no_permission: "<red>You don't have permission.</red>"
+  usage: "<red>Usage: /giveaway [admin|template <name>]</red>"
+  template_started: "<green>Started template giveaway: <name></green>"
+  template_not_found: "<red>Template not found: <name></red>"
+  template_invalid: "<red>Invalid template <name>: <reason></red>"
+  template_console_only: "<red>'template' subcommand is for console only.</red>"
+
+celebrate:
+  announcement: "<gold>🎉 <player> won <title>! 🎉</gold>"

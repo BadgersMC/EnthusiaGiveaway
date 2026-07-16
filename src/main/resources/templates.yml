@@ -1,0 +1,32 @@
+# EnthusiaGiveaway — template definitions
+# Each template is a named preset that can be started from the admin menu
+# or console via "/giveaway template <name>".
+#
+# Fields:
+#   title        — display title shown to players
+#   description  — lore text describing the reward (shown in menu)
+#   command      — console command to execute for each winner (<player> = winner name)
+#   max_winners  — number of winners to draw
+#   duration     — how long the giveaway runs (ISO-8601 duration: P1D, PT30M, PT1H30M, P10S)
+
+templates:
+  diamond-stack:
+    title: "Diamond Stack Giveaway"
+    description: "Win a stack of diamonds!"
+    command: "give <player> diamond 64"
+    max_winners: 1
+    duration: "PT10M"
+
+  epic-key:
+    title: "Epic Key Giveaway"
+    description: "Win an epic crate key!"
+    command: "crate givekey <player> epic 1"
+    max_winners: 3
+    duration: "PT15M"
+
+  vip-rank:
+    title: "VIP Rank Giveaway"
+    description: "Win VIP rank for 30 days!"
+    command: "lp user <player> parent addtemp vip 30d"
+    max_winners: 1
+    duration: "PT30M"

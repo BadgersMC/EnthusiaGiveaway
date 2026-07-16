@@ -6,6 +6,7 @@ import java.util.UUID
 data class Giveaway(
     val id: GiveawayId,
     val title: String,
+    val description: String = "",
     val command: String,
     val scheduledAt: Instant,
     val endsAt: Instant,
