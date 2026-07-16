@@ -16,6 +16,7 @@ import org.jetbrains.exposed.sql.javatime.timestamp
 object GiveawaysTable : Table("giveaway") {
     val id = varchar("id", 36)
     val title = varchar("title", 64)
+    val description = text("description").nullable()
     val command = text("command")
     val scheduledAt = timestamp("scheduled_at")
     val endsAt = timestamp("ends_at")

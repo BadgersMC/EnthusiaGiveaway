@@ -6,6 +6,7 @@ import net.badgersmc.giveaway.application.EnterGiveaway
 import net.badgersmc.giveaway.application.ListActiveGiveaways
 import net.badgersmc.giveaway.application.ResumeGiveawaysOnStartup
 import net.badgersmc.giveaway.application.ScheduleGiveaway
+import net.badgersmc.giveaway.application.StartGiveawayFromTemplate
 import net.badgersmc.giveaway.domain.SeededRandomDraw
 import net.badgersmc.giveaway.domain.ports.CelebrationBroadcaster
 import net.badgersmc.giveaway.domain.ports.PlaceholderExpander
@@ -19,6 +20,7 @@ import net.badgersmc.giveaway.infrastructure.bukkit.NoOpPlaceholderExpander
 import net.badgersmc.giveaway.infrastructure.bukkit.PluginLoggerAdapter
 import net.badgersmc.giveaway.infrastructure.celebrate.BukkitCelebrationBroadcaster
 import net.badgersmc.giveaway.infrastructure.bukkit.GiveawayCommand
+import net.badgersmc.giveaway.infrastructure.config.TemplateLoader
 import net.badgersmc.giveaway.infrastructure.menus.AdminGiveawayMenu
 import net.badgersmc.giveaway.infrastructure.menus.ChatPromptListener
 import net.badgersmc.giveaway.infrastructure.menus.PlayerGiveawayMenu
@@ -64,6 +66,8 @@ class ServiceModule(private val plugin: JavaPlugin) {
     )
     val scheduleGiveaway = ScheduleGiveaway(giveaways, clock, celebration)
     val cancelGiveaway = CancelGiveaway(giveaways, celebration)
+    val templates = TemplateLoader.load(plugin.dataFolder, plugin.javaClass.classLoader)
+    val startFromTemplate = StartGiveawayFromTemplate(templates, scheduleGiveaway)
     val resumeGiveawaysOnStartup = ResumeGiveawaysOnStartup(
         giveaways, { drawWinners.invoke(it) }, clock,
     )
@@ -71,9 +75,9 @@ class ServiceModule(private val plugin: JavaPlugin) {
     // Bukkit-facing
     val chatPrompt = ChatPromptListener(plugin)
     val playerMenu = PlayerGiveawayMenu(listActive, enterGiveaway)
-    val scheduleWizard = ScheduleWizard(scheduleGiveaway, chatPrompt)
-    val adminMenu = AdminGiveawayMenu(giveaways, cancelGiveaway, scheduleWizard)
-    val giveawayCommand = GiveawayCommand(playerMenu, adminMenu)
+    val scheduleWizard = ScheduleWizard(scheduleGiveaway)
+    val adminMenu = AdminGiveawayMenu(giveaways, cancelGiveaway, scheduleWizard, templates, startFromTemplate)
+    val giveawayCommand = GiveawayCommand(playerMenu, adminMenu, startFromTemplate)
 
     val nexusScheduler = NexusScheduler(plugin)
     val scheduler = BukkitTickScheduler(

@@ -16,6 +16,7 @@ class ExposedGiveawayRepository : GiveawayRepository {
         GiveawaysTable.upsert {
             it[id] = giveaway.id.value.toString()
             it[title] = giveaway.title
+            it[description] = giveaway.description.takeIf { it.isNotEmpty() }
             it[command] = giveaway.command
             it[scheduledAt] = giveaway.scheduledAt
             it[endsAt] = giveaway.endsAt
@@ -44,6 +45,7 @@ class ExposedGiveawayRepository : GiveawayRepository {
     private fun ResultRow.toGiveaway(): Giveaway = Giveaway(
         id = GiveawayId(UUID.fromString(this[GiveawaysTable.id])),
         title = this[GiveawaysTable.title],
+        description = this[GiveawaysTable.description] ?: "",
         command = this[GiveawaysTable.command],
         scheduledAt = this[GiveawaysTable.scheduledAt],
         endsAt = this[GiveawaysTable.endsAt],
