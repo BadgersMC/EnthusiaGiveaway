@@ -7,6 +7,7 @@ import net.badgersmc.giveaway.application.EnterGiveaway
 import net.badgersmc.giveaway.application.EnterResult
 import net.badgersmc.giveaway.application.GiveawaySummary
 import net.badgersmc.giveaway.application.ListActiveGiveaways
+import net.badgersmc.giveaway.infrastructure.components.Styled
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -46,44 +47,33 @@ class PlayerGiveawayMenu(
         val material = if (s.alreadyEntered) Material.LIME_DYE else Material.PAPER
         val item = ItemStack(material)
         item.editMeta { meta ->
-            meta.displayName(
-                Component.text(s.title)
-                    .color(NamedTextColor.GOLD)
-                    .decorate(TextDecoration.BOLD)
-                    .decoration(TextDecoration.ITALIC, false)
-            )
+            meta.displayName(Styled.giveawayTitle(s.title))
             meta.lore(listOf(
-                Component.text("Time remaining: ${formatDuration(s.secondsRemaining)}")
-                    .color(NamedTextColor.YELLOW)
-                    .decoration(TextDecoration.ITALIC, false),
-                Component.text("Entries: ${s.entryCount}")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false),
+                Styled.timeLeft(s.secondsRemaining),
+                Styled.body("Entries: ${s.entryCount}"),
                 Component.empty(),
                 if (s.alreadyEntered)
-                    Component.text("✓ Entered").color(NamedTextColor.GREEN)
-                        .decoration(TextDecoration.ITALIC, false)
+                    Styled.success("✓ Entered")
                 else
-                    Component.text("Click to enter").color(NamedTextColor.AQUA)
-                        .decoration(TextDecoration.ITALIC, false),
+                    Styled.accent("Click to enter"),
             ))
         }
 
         return GuiItem(item) { event ->
             event.isCancelled = true
             if (s.alreadyEntered) {
-                actionbar(player, "You are already entered.", NamedTextColor.GRAY)
+                player.sendActionBar(Styled.body("You are already entered."))
                 return@GuiItem
             }
             when (enterGiveaway.invoke(s.id, player.uniqueId)) {
                 EnterResult.Success -> {
-                    actionbar(player, "Entered: ${s.title}", NamedTextColor.GREEN)
+                    player.sendActionBar(Styled.success("Entered: ${s.title}"))
                     player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.5f)
-                    render(player) // refresh
+                    render(player)
                 }
-                EnterResult.AlreadyEntered -> actionbar(player, "You are already entered.", NamedTextColor.GRAY)
-                EnterResult.GiveawayNotFound -> actionbar(player, "This giveaway no longer exists.", NamedTextColor.RED)
-                EnterResult.NotActive -> actionbar(player, "This giveaway is not active.", NamedTextColor.RED)
+                EnterResult.AlreadyEntered -> player.sendActionBar(Styled.body("You are already entered."))
+                EnterResult.GiveawayNotFound -> player.sendActionBar(Styled.error("This giveaway no longer exists."))
+                EnterResult.NotActive -> player.sendActionBar(Styled.error("This giveaway is not active."))
             }
         }
     }
@@ -91,26 +81,8 @@ class PlayerGiveawayMenu(
     private fun infoItem(text: String, color: NamedTextColor): GuiItem {
         val item = ItemStack(Material.BARRIER)
         item.editMeta { meta ->
-            meta.displayName(
-                Component.text(text).color(color).decoration(TextDecoration.ITALIC, false)
-            )
+            meta.displayName(Component.text(text).color(color).decoration(TextDecoration.ITALIC, false))
         }
         return GuiItem(item) { it.isCancelled = true }
-    }
-
-    private fun actionbar(player: Player, text: String, color: NamedTextColor) {
-        player.sendActionBar(Component.text(text).color(color))
-    }
-
-    private fun formatDuration(seconds: Long): String {
-        if (seconds <= 0) return "expired"
-        val h = seconds / 3600
-        val m = (seconds % 3600) / 60
-        val s = seconds % 60
-        return buildString {
-            if (h > 0) append("${h}h ")
-            if (h > 0 || m > 0) append("${m}m ")
-            append("${s}s")
-        }
     }
 }

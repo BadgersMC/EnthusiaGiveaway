@@ -5,13 +5,13 @@ import com.github.stefvanschie.inventoryframework.gui.type.ChestGui
 import com.github.stefvanschie.inventoryframework.pane.StaticPane
 import net.badgersmc.giveaway.application.CancelGiveaway
 import net.badgersmc.giveaway.application.CancelResult
-import net.badgersmc.giveaway.application.ScheduleResult
-import net.badgersmc.giveaway.application.StartGiveawayFromTemplate
 import net.badgersmc.giveaway.application.StartFromTemplateResult
+import net.badgersmc.giveaway.application.StartGiveawayFromTemplate
 import net.badgersmc.giveaway.domain.Giveaway
 import net.badgersmc.giveaway.domain.GiveawayState
 import net.badgersmc.giveaway.domain.Template
 import net.badgersmc.giveaway.domain.ports.GiveawayRepository
+import net.badgersmc.giveaway.infrastructure.components.Styled
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -41,8 +41,7 @@ class AdminGiveawayMenu(
         if (rows.isEmpty()) {
             val empty = ItemStack(Material.BARRIER)
             empty.editMeta {
-                it.displayName(Component.text("No scheduled or active giveaways").color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false))
+                it.displayName(Styled.body("No scheduled or active giveaways"))
             }
             pane.addItem(GuiItem(empty) { it.isCancelled = true }, 4, 2)
         } else {
@@ -51,11 +50,11 @@ class AdminGiveawayMenu(
             }
         }
 
-        // Schedule-new button (bottom-right)
+        // Schedule-new button
         val schedule = ItemStack(Material.NETHER_STAR)
         schedule.editMeta {
-            it.displayName(Component.text("Schedule new").color(NamedTextColor.GREEN)
-                .decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false))
+            it.displayName(Styled.success("🗓 Schedule New")
+                .decorate(TextDecoration.BOLD))
         }
         pane.addItem(GuiItem(schedule) { event ->
             event.isCancelled = true
@@ -67,8 +66,8 @@ class AdminGiveawayMenu(
         if (templates.isNotEmpty()) {
             val tpl = ItemStack(Material.BOOK)
             tpl.editMeta {
-                it.displayName(Component.text("Start from Template").color(NamedTextColor.AQUA)
-                    .decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false))
+                it.displayName(Styled.accent("📋 Start from Template")
+                    .decorate(TextDecoration.BOLD))
             }
             pane.addItem(GuiItem(tpl) { event ->
                 event.isCancelled = true
@@ -81,26 +80,20 @@ class AdminGiveawayMenu(
         gui.show(player)
     }
 
-    /** Build a giveaway row item with live time-remaining in the lore. */
     private fun buildRow(g: Giveaway, now: Instant, player: Player): GuiItem {
         val mat = if (g.state == GiveawayState.ACTIVE) Material.YELLOW_DYE else Material.GRAY_DYE
         val item = ItemStack(mat)
+        val remaining = Duration.between(now, g.endsAt).seconds.coerceAtLeast(0L)
         item.editMeta { meta ->
-            meta.displayName(Component.text(g.title).color(NamedTextColor.GOLD)
-                .decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false))
-            val remaining = Duration.between(now, g.endsAt).seconds.coerceAtLeast(0L)
+            meta.displayName(Styled.giveawayTitle(g.title))
             meta.lore(listOf(
-                Component.text("State: ${g.state}").color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false),
-                Component.text("Time left: ${formatDuration(remaining)}").color(NamedTextColor.YELLOW)
-                    .decoration(TextDecoration.ITALIC, false),
-                Component.text("Winners: ${g.maxWinners}").color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false),
-                Component.text("Command: ${g.command}").color(NamedTextColor.DARK_GRAY)
+                Styled.body("State: ${g.state.name.lowercase().replaceFirstChar { it.uppercase() }}"),
+                Styled.timeLeft(remaining),
+                Styled.body("Winners: ${g.maxWinners}"),
+                Component.text(g.command, NamedTextColor.DARK_GRAY)
                     .decoration(TextDecoration.ITALIC, false),
                 Component.empty(),
-                Component.text("Shift-click to cancel").color(NamedTextColor.RED)
-                    .decoration(TextDecoration.ITALIC, false),
+                Styled.error("Shift-click to cancel"),
             ))
         }
         return GuiItem(item) { event ->
@@ -108,16 +101,15 @@ class AdminGiveawayMenu(
             if (!event.isShiftClick) return@GuiItem
             when (cancelGiveaway.invoke(g.id)) {
                 CancelResult.Cancelled -> {
-                    player.sendActionBar(Component.text("Cancelled: ${g.title}").color(NamedTextColor.RED))
-                    open(player) // refresh
+                    player.sendActionBar(Styled.error("Cancelled: ${g.title}"))
+                    open(player)
                 }
-                CancelResult.NotFound -> player.sendActionBar(Component.text("Already gone").color(NamedTextColor.GRAY))
-                CancelResult.AlreadyFinal -> player.sendActionBar(Component.text("Already finalized").color(NamedTextColor.GRAY))
+                CancelResult.NotFound -> player.sendActionBar(Styled.body("Already gone"))
+                CancelResult.AlreadyFinal -> player.sendActionBar(Styled.body("Already finalized"))
             }
         }
     }
 
-    /** Template browser sub-menu. */
     private fun openTemplates(player: Player) {
         val gui = ChestGui(3, "Start from Template")
         gui.setOnTopClick { it.isCancelled = true }
@@ -126,17 +118,15 @@ class AdminGiveawayMenu(
         templates.take(9).forEachIndexed { index, t ->
             val item = ItemStack(Material.BOOK)
             item.editMeta { meta ->
-                meta.displayName(Component.text(t.title).color(NamedTextColor.GOLD)
-                    .decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false))
+                meta.displayName(Styled.giveawayTitle(t.title))
                 meta.lore(listOf(
-                    Component.text(t.description).color(NamedTextColor.WHITE)
+                    Component.text(t.description, NamedTextColor.WHITE)
                         .decoration(TextDecoration.ITALIC, false),
                     Component.empty(),
-                    Component.text("Winners: ${t.maxWinners}  ·  Duration: ${formatDuration(t.durationSeconds)}").color(NamedTextColor.GRAY)
-                        .decoration(TextDecoration.ITALIC, false),
+                    Styled.body("Winners: ${t.maxWinners}  ·  Duration: ${Styled.timeLeft(t.durationSeconds)}"),
+                    Styled.body("Command: ${t.command}"),
                     Component.empty(),
-                    Component.text("Click to start").color(NamedTextColor.GREEN)
-                        .decoration(TextDecoration.ITALIC, false),
+                    Styled.success("Click to start"),
                 ))
             }
             pane.addItem(GuiItem(item) { event ->
@@ -145,22 +135,20 @@ class AdminGiveawayMenu(
                 when (result) {
                     is StartFromTemplateResult.Created -> {
                         player.closeInventory()
-                        player.sendMessage(Component.text("Started: ${t.title}").color(NamedTextColor.GREEN))
+                        player.sendMessage(Styled.success("Started: ${t.title}"))
                         open(player)
                     }
                     is StartFromTemplateResult.Invalid ->
-                        player.sendActionBar(Component.text("Invalid: ${result.reason}").color(NamedTextColor.RED))
+                        player.sendActionBar(Styled.error("Invalid: ${result.reason}"))
                     StartFromTemplateResult.NotFound ->
-                        player.sendActionBar(Component.text("Template not found").color(NamedTextColor.RED))
+                        player.sendActionBar(Styled.error("Template not found"))
                 }
             }, index, 1)
         }
 
-        // Back button
         val back = ItemStack(Material.ARROW)
         back.editMeta {
-            it.displayName(Component.text("← Back").color(NamedTextColor.GRAY)
-                .decoration(TextDecoration.ITALIC, false))
+            it.displayName(Styled.body("← Back"))
         }
         pane.addItem(GuiItem(back) { event ->
             event.isCancelled = true
@@ -169,17 +157,5 @@ class AdminGiveawayMenu(
 
         gui.addPane(pane)
         gui.show(player)
-    }
-
-    private fun formatDuration(seconds: Long): String {
-        if (seconds <= 0) return "expired"
-        val h = seconds / 3600
-        val m = (seconds % 3600) / 60
-        val s = seconds % 60
-        return buildString {
-            if (h > 0) append("${h}h ")
-            if (h > 0 || m > 0) append("${m}m ")
-            append("${s}s")
-        }
     }
 }
